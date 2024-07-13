@@ -8,6 +8,7 @@
 }
 
 .navbar-brand {
+     
     font-size: 1.1rem;
 }
 
@@ -59,4 +60,10 @@
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
+}
+
+.img1{
+    width: 30px;
+    height: 20px;
+    
 }

@@ -3,19 +3,19 @@
 
 <PageTitle>Weather forecast</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1 style="color:white">Weather forecast</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p style="color:white">This component demonstrates fetching data from the server.</p>
 
 @if (forecasts == null)
 {
-    <p><em>Loading...</em></p>
+    <p style="color:white"><em>Loading...</em></p>
 }
 else
 {
     <table class="table">
         <thead>
-            <tr>
+            <tr style="color:white">
                 <th>Date</th>
                 <th>Temp. (C)</th>
                 <th>Temp. (F)</th>
@@ -25,7 +25,7 @@ else
         <tbody>
             @foreach (var forecast in forecasts)
             {
-                <tr>
+                <tr style="color:white">
                     <td>@forecast.Date.ToShortDateString()</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.TemperatureF</td>
