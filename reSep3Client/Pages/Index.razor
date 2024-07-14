@@ -7,6 +7,35 @@
 <p style="color:white">Welcome to IDFC.</p>
 
 
-<SurveyPrompt Title="Want to use IDFC?" />
+<div style="background-color:transparent; " class="alert alert-secondary mt-4">
+    <span style="color:white" class="oi oi-pencil me-2" aria-hidden="true"></span>
+    <strong style="color:white">New to IDFC?</strong>
+    <span style="color:white" class="text-nowrap">
+         Please click here
+        <button style="color:white; background-color:lightslategray" target="_blank" class="font-weight-bold link-dark" @onclick="gotoLoginPage">SIGNIN/SIGNUP</button>
+        to start.
+    </span>
+    
+</div>
 
  
+<SurveyPrompt Title=": Your professional emotional expert." />
+
+<SurveyPrompt Title=": Submit your text and receive an expert emotional analysis." />
+
+ @code{
+
+
+    [Inject]
+    private NavigationManager Navigation{ get; set; }
+
+
+    private void gotoLoginPage()
+    {
+        Navigation.NavigateTo("/login");
+    }
+    
+
+
+
+ }

@@ -1,17 +1,18 @@
-﻿<div style="background-color:black" class="alert alert-secondary mt-4">
-    <span class="oi oi-pencil me-2" aria-hidden="true"></span>
-    <strong>@Title</strong>
-
-    <span class="text-nowrap">
-        Please click here
-        <a style="color:white" target="_blank" class="font-weight-bold link-dark" href="https://go.microsoft.com/fwlink/?linkid=2148851">SIGNIN/SIGNUP</a>
-        to start.
-    </span>
+﻿
+<div style="background-color:transparent; " class="alert alert-secondary mt-4">
+    <span style="color:white" class="oi oi-pencil me-2" aria-hidden="true"></span>
     
+     <span style="color:mediumpurple" class="text-nowrap">
+        IDFC 
+    </span>
+
+    <strong style="color:white">@Title</strong>  
 </div>
 
 @code {
+   
     // Demonstrates how a parent component can supply parameters
     [Parameter]
     public string? Title { get; set; }
+
 }

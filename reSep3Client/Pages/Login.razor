@@ -1,0 +1,65 @@
+﻿@page "/login"
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Web
+
+<h1 style="color: white">Login Page</h1>
+
+<div style="background-color: transparent;" class="alert alert-secondary mt-4">
+    <span style="color: white" class="text-nowrap">
+        Please click here to start.
+    </span>
+
+    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowUp">Sign in</button>
+
+    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowUp1">Sign up</button>
+</div>
+
+<div class="alert alert-secondary mt-4" style="background-color: transparent; display: @(isVisible ? "none" : "block")">
+    <span style="color: white" class="text-nowrap">
+        Username: 
+    </span>
+
+    <input style="background-color:lightslategray"/>
+    <span style="color: white" class="text-nowrap">
+        Password: 
+    </span>
+    <input style="background-color:lightslategray"/>
+
+    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign In</button>
+</div>
+
+<div class="alert alert-secondary mt-4" style="background-color: transparent; display: @(isVisible1 ? "none" : "block")">
+    <span style="color: white" class="text-nowrap">
+        Username: 
+    </span>
+
+    <input style="background-color:lightslategray"/>
+    <span style="color: white" class="text-nowrap">
+        Password: 
+    </span>
+    <input style="background-color:lightslategray"/>
+
+    <span style="color: white" class="text-nowrap">
+        Email: 
+    </span>
+    <input style="background-color:lightslategray"/>
+
+    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign Up</button>
+</div>
+
+@code {
+    private bool isVisible = true;
+    private bool isVisible1 = true;
+
+    private void ShowUp()
+    {
+        isVisible = !isVisible;
+    }
+
+    
+
+    private void ShowUp1()
+    {
+        isVisible1 = !isVisible1;
+    }
+}
