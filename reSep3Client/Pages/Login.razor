@@ -1,6 +1,12 @@
 ﻿@page "/login"
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 @using Microsoft.AspNetCore.Components.Web
+@using reSep3Client.IServices
+@using reSep3Client.Models
+@using reSep3Client.Webservices
+
+
 
 <h1 style="color: white">Login Page</h1>
 
@@ -14,49 +20,110 @@
     <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowUp1">Sign up</button>
 </div>
 
+
+
 <div class="alert alert-secondary mt-4" style="background-color: transparent; display: @(isVisible ? "none" : "block")">
     <span style="color: white" class="text-nowrap">
         Username: 
     </span>
 
-    <input style="background-color:lightslategray"/>
+    <input @bind="username" style="background-color:lightslategray"/>
     <span style="color: white" class="text-nowrap">
         Password: 
     </span>
-    <input style="background-color:lightslategray"/>
+    <input @bind="password" style="background-color:lightslategray"/>
 
-    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign In</button>
+    <button @onclick="login" style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign In</button>
 </div>
+
+
 
 <div class="alert alert-secondary mt-4" style="background-color: transparent; display: @(isVisible1 ? "none" : "block")">
     <span style="color: white" class="text-nowrap">
         Username: 
     </span>
 
-    <input style="background-color:lightslategray"/>
+    <input @bind="username" style="background-color:lightslategray"/>
     <span style="color: white" class="text-nowrap">
         Password: 
     </span>
-    <input style="background-color:lightslategray"/>
+    <input @bind="password" style="background-color:lightslategray"/>
 
     <span style="color: white" class="text-nowrap">
         Email: 
     </span>
-    <input style="background-color:lightslategray"/>
+    <input @bind="email" style="background-color:lightslategray"/>
 
-    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign Up</button>
+    <button @onclick="register" style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign Up</button>
 </div>
+
+
 
 @code {
     private bool isVisible = true;
     private bool isVisible1 = true;
+    private string username = "";
+    private string password = "";
+    private string email = "";
+
+    private IUser _iUser = new UserService();
+
+
+
+    private void login()
+    {
+
+
+        if (username == "chen" && password == "123")
+        {
+            gotoCounter();
+        }
+        else
+        {
+            pop("wrong username or password");
+        }
+    }
+
+
+
+    private void register()
+    {
+        User user = new User()
+        {
+            Username = username,
+            Password = password,
+            Email = email,
+            ChatHistories = new List<ChatHistory>()
+        };
+
+        if(username != "" && password != "" && email != "")
+        {
+            _iUser.RegisterUser(user);
+            username = "";
+            password = "";
+            email = "";
+        }
+        else
+        {
+            Console.WriteLine("wrong");
+        }
+
+    }
+
+    private void gotoCounter()
+    {
+        Navigation.NavigateTo("/counter");
+    }
+
+    private void pop(string message)
+    {
+        JS.InvokeVoidAsync(message);
+    }
 
     private void ShowUp()
     {
         isVisible = !isVisible;
     }
-
-    
 
     private void ShowUp1()
     {
