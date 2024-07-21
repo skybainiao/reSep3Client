@@ -1,94 +1,80 @@
 ﻿@page "/login"
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject IUser UserService
 @using Microsoft.AspNetCore.Components.Web
-@using reSep3Client.IServices
 @using reSep3Client.Models
-@using reSep3Client.Webservices
-
-
 
 <h1 style="color: white">Login Page</h1>
 
 <div style="background-color: transparent;" class="alert alert-secondary mt-4">
-    <span style="color: white" class="text-nowrap">
-        Please click here to start.
-    </span>
+    <span style="color: white" class="text-nowrap">Please click here to start.</span>
 
-    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowUp">Sign in</button>
-
-    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowUp1">Sign up</button>
+    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowLogin">Sign in</button>
+    <button style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" @onclick="ShowRegister">Sign up</button>
 </div>
 
+@if (!isVisibleLogin)
+{
+    <div class="alert alert-secondary mt-4" style="background-color: transparent;">
+        <span style="color: white" class="text-nowrap">Username:</span>
+        <input @bind="username1" style="background-color:lightslategray" />
 
+        <span style="color: white" class="text-nowrap">Password:</span>
+        <input @bind="password1" style="background-color:lightslategray" type="password" />
 
-<div class="alert alert-secondary mt-4" style="background-color: transparent; display: @(isVisible ? "none" : "block")">
-    <span style="color: white" class="text-nowrap">
-        Username: 
-    </span>
+        <button @onclick="Signin" style="color: white; background-color: lightslategray" class="font-weight-bold link-dark">Sign In</button>
+    </div>
+}
 
-    <input @bind="username" style="background-color:lightslategray"/>
-    <span style="color: white" class="text-nowrap">
-        Password: 
-    </span>
-    <input @bind="password" style="background-color:lightslategray"/>
+@if (!isVisibleRegister)
+{
+    <div class="alert alert-secondary mt-4" style="background-color: transparent;">
+        <span style="color: white" class="text-nowrap">Username:</span>
+        <input @bind="username" style="background-color:lightslategray" />
 
-    <button @onclick="login" style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign In</button>
-</div>
+        <span style="color: white" class="text-nowrap">Password:</span>
+        <input @bind="password" style="background-color:lightslategray" type="password" />
 
+        <span style="color: white" class="text-nowrap">Email:</span>
+        <input @bind="email" style="background-color:lightslategray" />
 
-
-<div class="alert alert-secondary mt-4" style="background-color: transparent; display: @(isVisible1 ? "none" : "block")">
-    <span style="color: white" class="text-nowrap">
-        Username: 
-    </span>
-
-    <input @bind="username" style="background-color:lightslategray"/>
-    <span style="color: white" class="text-nowrap">
-        Password: 
-    </span>
-    <input @bind="password" style="background-color:lightslategray"/>
-
-    <span style="color: white" class="text-nowrap">
-        Email: 
-    </span>
-    <input @bind="email" style="background-color:lightslategray"/>
-
-    <button @onclick="register" style="color: white; background-color: lightslategray" class="font-weight-bold link-dark" >Sign Up</button>
-</div>
-
-
+        <button @onclick="Register" style="color: white; background-color: lightslategray" class="font-weight-bold link-dark">Sign Up</button>
+    </div>
+}
 
 @code {
-    private bool isVisible = true;
-    private bool isVisible1 = true;
+    private bool isVisibleLogin = true;
+    private bool isVisibleRegister = true;
     private string username = "";
     private string password = "";
     private string email = "";
+    private string username1 = "";
+    private string password1 = "";
+     
 
-    private IUser _iUser = new UserService();
 
-
-
-    private void login()
+    private async Task Signin()
     {
+        Console.WriteLine($"Attempting to log in with username: {username1} and password: {password1}"); // Debug log
+        var user = new User { Username = username1, Password = password1 };
+        var foundUser = await UserService.LoginUser(user);
 
-
-        if (username == "chen" && password == "123")
+        if (foundUser != null)
         {
-            gotoCounter();
+            Console.WriteLine("Login successful"); // Debug log
+            Navigation.NavigateTo("/counter");
         }
         else
         {
-            pop("wrong username or password");
+            Console.WriteLine("Login failed"); // Debug log
+            await JS.InvokeVoidAsync("alert", "Wrong username or password");
         }
     }
 
-
-
-    private void register()
+    private async Task Register()
     {
-        User user = new User()
+        var user = new User
         {
             Username = username,
             Password = password,
@@ -96,37 +82,37 @@
             ChatHistories = new List<ChatHistory>()
         };
 
-        if(username != "" && password != "" && email != "")
+        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(email))
         {
-            _iUser.RegisterUser(user);
-            username = "";
-            password = "";
-            email = "";
+            var success = await UserService.RegisterUser(user);
+            if (success)
+            {
+                await JS.InvokeVoidAsync("alert", "Register successful! Now you can login!");
+                username = "";
+                password = "";
+                email = "";
+                ShowLogin();
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Register failed! Please try again.");
+            }
         }
         else
         {
-            Console.WriteLine("wrong");
+            await JS.InvokeVoidAsync("alert", "Please enter valid username, password, and email");
         }
-
     }
 
-    private void gotoCounter()
+    private void ShowLogin()
     {
-        Navigation.NavigateTo("/counter");
+        isVisibleLogin = false;
+        isVisibleRegister = true;
     }
 
-    private void pop(string message)
+    private void ShowRegister()
     {
-        JS.InvokeVoidAsync(message);
-    }
-
-    private void ShowUp()
-    {
-        isVisible = !isVisible;
-    }
-
-    private void ShowUp1()
-    {
-        isVisible1 = !isVisible1;
+        isVisibleLogin = true;
+        isVisibleRegister = false;
     }
 }

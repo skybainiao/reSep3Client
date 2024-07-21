@@ -6,28 +6,27 @@ namespace reSep3Client.Webservices
 {
     public class UserService : IUser
     {
+        private readonly HttpClient httpClient;
+
+        public UserService(HttpClient httpClient)
+        {
+            this.httpClient = httpClient;
+        }
 
         public async Task<bool> RegisterUser(User user)
         {
-            using HttpClient httpClient = new();
-            var response = await httpClient.PostAsJsonAsync("http://localhost:8080/users", user);
+            var response = await httpClient.PostAsJsonAsync("users", user);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<User?> LoginUser(User user)
         {
-            using HttpClient httpClient = new();
-            var response = await httpClient.PostAsJsonAsync("http://localhost:8080/login", user);
+            var response = await httpClient.PostAsJsonAsync("users/login", user);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<User>();
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
-
-         
     }
 }
