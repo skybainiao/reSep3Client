@@ -2,8 +2,9 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 @inject IUser UserService
-@using Microsoft.AspNetCore.Components.Web
 @using reSep3Client.Models
+@using reSep3Client.IServices
+
 
 <h1 style="color: white">Login Page</h1>
 
@@ -51,8 +52,6 @@
     private string email = "";
     private string username1 = "";
     private string password1 = "";
-     
-
 
     private async Task Signin()
     {
