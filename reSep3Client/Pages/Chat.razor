@@ -1,10 +1,12 @@
 ﻿@page "/chat"
 @using reSep3Client.Models
+@using System.Net.WebSockets
+@using System.Text.Json
 @inject IJSRuntime JS
+@inject WebSocketService WebSocketService
+@using reSep3Client.Webservices
 
- 
-
-<div class="chat-container" style="position: fixed; left:6.5%; bottom: 0; width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 20px; background-color: transparent;  ">
+<div class="chat-container" style="position: fixed; left:6.5%; bottom: 0; width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 20px; background-color: transparent;">
     <div class="messages-container" style="flex-grow: 1; width: 100%; max-width: 600px; overflow-y: auto; margin-bottom: 10px; color: white;">
         @foreach (var message in messages)
         {
@@ -25,11 +27,21 @@
     private List<string> messages = new List<string>();
     private string newMessage = string.Empty;
 
-    private void SendMessage()
+    protected override async Task OnInitializedAsync()
+    {
+        await WebSocketService.ConnectAsync("ws://localhost:5000");
+    }
+
+    private async Task SendMessage()
     {
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
-            messages.Add(newMessage);
+            messages.Add($"You: {newMessage}");
+            await WebSocketService.SendMessageAsync(newMessage);
+            var response = await WebSocketService.ReceiveMessageAsync();
+            var responseJson = JsonDocument.Parse(response);
+            var prediction = responseJson.RootElement.GetProperty("prediction").GetString();
+            messages.Add($"Bot: {prediction}");
             newMessage = string.Empty;
         }
     }
@@ -38,7 +50,7 @@
     {
         if (e.Key == "Enter")
         {
-            SendMessage();
+            await SendMessage();
             if (JS != null)
             {
                 await JS.InvokeVoidAsync("document.querySelector('.chat-input').focus");
