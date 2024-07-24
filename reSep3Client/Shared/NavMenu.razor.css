@@ -46,6 +46,17 @@
     color: white;
 }
 
+
+.vertical-line {
+    width: 2px; /* 竖线的宽度 */
+    height: 100vh; /* 竖线的高度为视口高度 */
+    background-color: #333; /* 竖线的颜色 */
+    margin-left: 10px; /* 竖线与导航菜单的间距 */
+    position: absolute;
+    right: 0; /* 将竖线定位到右边 */
+    top: 0; /* 将竖线从顶部开始 */
+}
+
 .nav-item ::deep a:hover {
     background-color: rgba(255,255,255,0.1);
     color: white;

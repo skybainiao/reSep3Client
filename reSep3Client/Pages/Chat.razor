@@ -1,0 +1,48 @@
+﻿@page "/chat"
+@using reSep3Client.Models
+@inject IJSRuntime JS
+
+ 
+
+<div class="chat-container" style="position: fixed; left:6.5%; bottom: 0; width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 20px; background-color: transparent;  ">
+    <div class="messages-container" style="flex-grow: 1; width: 100%; max-width: 600px; overflow-y: auto; margin-bottom: 10px; color: white;">
+        @foreach (var message in messages)
+        {
+            <div class="message" style="background-color: transparent; border-radius: 20px; padding: 10px; margin: 5px 0; max-width: 80%;">@message</div>
+        }
+    </div>
+    <div class="input-container" style="display: flex; align-items: center; width: 100%; max-width: 600px;">
+        <input type="text" @bind="newMessage" class="chat-input" placeholder="Type your message..." @onkeydown="HandleEnter" style="flex-grow: 1; padding: 10px; border: none; border-radius: 20px; margin-right: 10px; background-color: #333; color: white; outline: none;" />
+        <button class="send-button" @onclick="SendMessage" style="background-color: #007bff; border: none; color: white; padding: 10px; border-radius: 50%; cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style="fill: white;">
+                <path d="M2.01 21l19.74-9.74L2.01 1.52v8.84L14.72 12 2.01 13.64z"></path>
+            </svg>
+        </button>
+    </div>
+</div>
+
+@code {
+    private List<string> messages = new List<string>();
+    private string newMessage = string.Empty;
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            messages.Add(newMessage);
+            newMessage = string.Empty;
+        }
+    }
+
+    private async Task HandleEnter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SendMessage();
+            if (JS != null)
+            {
+                await JS.InvokeVoidAsync("document.querySelector('.chat-input').focus");
+            }
+        }
+    }
+}
