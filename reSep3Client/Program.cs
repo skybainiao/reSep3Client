@@ -9,9 +9,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:8080/") });
- 
 builder.Services.AddScoped<IUser, UserService>();
 builder.Services.AddScoped<WebSocketService>();
-
 
 await builder.Build().RunAsync();
