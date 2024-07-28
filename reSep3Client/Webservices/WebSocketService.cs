@@ -1,6 +1,8 @@
-﻿using System;
+﻿using reSep3Client.Models;
+using System;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,12 +19,14 @@ namespace reSep3Client.Webservices
             Console.WriteLine($"Connected");
         }
 
-        public async Task SendMessageAsync(string message)
+        public async Task SendMessageAsync(ChatMessage chatMessage)
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
+            var jsonMessage = JsonSerializer.Serialize(chatMessage);
+            var bytes = Encoding.UTF8.GetBytes(jsonMessage);
             await _webSocket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
-            Console.WriteLine($"Send message: {message}");
+            Console.WriteLine($"Sent message: {jsonMessage}");
         }
+
 
         public async Task<string> ReceiveMessageAsync()
         {

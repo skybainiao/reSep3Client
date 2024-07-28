@@ -9,6 +9,6 @@
 
         public string Email { get; set; }
 
-        public List<ChatHistory> ChatHistories { get; set; }
+        public List<ChatMessage> ChatHistories { get; set; }
     }
 }

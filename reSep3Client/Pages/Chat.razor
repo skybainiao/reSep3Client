@@ -3,6 +3,7 @@
 @using System.Net.WebSockets
 @using System.Text.Json
 @inject IJSRuntime JS
+@inject IJSRuntime JSRuntime
 @inject WebSocketService WebSocketService
 @using reSep3Client.Webservices
 
@@ -26,30 +27,46 @@
 @code {
     private List<string> messages = new List<string>();
     private string newMessage = string.Empty;
+    private string userId = "";
 
     protected override async Task OnInitializedAsync()
-{
-    try
     {
-        await WebSocketService.ConnectAsync("ws://localhost:5000/socket.io/?EIO=4&transport=websocket");
+        try
+        {
+
+            await WebSocketService.ConnectAsync("ws://localhost:5000/socket.io/?EIO=4&transport=websocket");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"WebSocket connection error: {ex.Message}");
+        }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"WebSocket connection error: {ex.Message}");
-    }
-}
 
 
     private async Task SendMessage()
     {
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
+            userId = await JSRuntime.InvokeAsync<string>("eval", "localStorage.getItem('userId')").ConfigureAwait(false);       
+            Console.WriteLine(userId);
+            var chatMessage = new ChatMessage
+            {
+                Id = userId,
+                Message = newMessage,
+                Timestamp = DateTime.UtcNow // 或使用其他适当的时间戳
+            };
+
             messages.Add($"You: {newMessage}");
-            await WebSocketService.SendMessageAsync(newMessage);
+
+            // 发送消息
+            await WebSocketService.SendMessageAsync(chatMessage);
+
+            // 接收消息
             var response = await WebSocketService.ReceiveMessageAsync();
             var responseJson = JsonDocument.Parse(response);
             var prediction = responseJson.RootElement.GetProperty("prediction").GetString();
-            messages.Add($"IDFC: {prediction}");
+            messages.Add($"Server: {prediction}");
+
             newMessage = string.Empty;
         }
     }
