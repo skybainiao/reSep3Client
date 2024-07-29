@@ -2,8 +2,11 @@
 {
     public class ChatMessage
     {
-        public string Id { get; set; }
-        public string Message { get; set; }
+        public long Id { get; set; }
+        public string UserMessage { get; set; }
+        public string BotMessage { get; set; }
         public DateTime Timestamp { get; set; }
+        public long UserId { get; set; }
     }
+
 }

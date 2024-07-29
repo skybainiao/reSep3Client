@@ -66,7 +66,7 @@
             await JSRuntime.InvokeVoidAsync("eval", $"localStorage.setItem('userId', '{foundUser.Id}')");
             Console.WriteLine("Login successful"); // Debug log
             Console.WriteLine(foundUser.Id);
-            Navigation.NavigateTo("/counter");
+            Navigation.NavigateTo("/chat");
         }
         else
         {
