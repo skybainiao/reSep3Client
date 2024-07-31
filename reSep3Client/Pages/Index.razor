@@ -1,10 +1,17 @@
 ﻿@page "/"
 
+@inject IJSRuntime JS
+@inject IJSRuntime JSRuntime
+
 <PageTitle>Index</PageTitle>
 
-<h1 style="color:white">Hi!</h1>
+<div>
+    <h1 style="color:white">Hi!</h1>
+    <h1 style="color:red">@username</h1>
+</div>
 
-<p style="color:white">Welcome to IDFC.</p>
+
+ 
 
 
 <div style="background-color:transparent; " class="alert alert-secondary mt-4">
@@ -23,12 +30,18 @@
 
 <SurveyPrompt Title=": Submit your text and receive an expert emotional analysis." />
 
- @code{
+@code{
 
 
     [Inject]
     private NavigationManager Navigation{ get; set; }
+    private string username{ get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+         username = await JSRuntime.InvokeAsync<string>("eval", "localStorage.getItem('username')").ConfigureAwait(false);       
+        
+    }
 
     private void gotoLoginPage()
     {
