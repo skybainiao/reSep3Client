@@ -75,7 +75,7 @@
 {
     if (!string.IsNullOrWhiteSpace(newMessage))
     {
-        // 从 localStorage 获取 userId 并转换为 long 类型
+        
         string userIdString = await JSRuntime.InvokeAsync<string>("eval", "localStorage.getItem('userId')").ConfigureAwait(false);
         if (long.TryParse(userIdString, out long userId))
         {
@@ -83,17 +83,15 @@
             
             var chatMessage = new ChatMessage
             {
-                UserId = userId, // 设置为 long 类型
+                UserId = userId,  
                 UserMessage = newMessage,
-                Timestamp = DateTime.UtcNow // 或使用其他适当的时间戳
+                Timestamp = DateTime.UtcNow 
             };
 
-            messages.Add($"You: {newMessage}");
-
-            // 发送消息
+            messages.Add($"You: {newMessage}"); 
+            
             await WebSocketService.SendMessageAsync(chatMessage);
-
-            // 接收消息
+           
             var response = await WebSocketService.ReceiveMessageAsync();
             var responseJson = JsonDocument.Parse(response);
             var prediction = responseJson.RootElement.GetProperty("prediction").GetString();
