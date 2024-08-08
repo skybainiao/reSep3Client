@@ -38,6 +38,18 @@
             userId = await JSRuntime.InvokeAsync<string>("eval", "localStorage.getItem('userId')").ConfigureAwait(false);       
             Console.WriteLine(userId);
 
+            await GetUserChatHistory();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Initialization error: {ex.Message}");
+        }
+    }
+
+
+    private async Task GetUserChatHistory()
+    {
             var response = await HttpClient.GetAsync($"http://localhost:8080/chathistories/user/{userId}");
             response.EnsureSuccessStatusCode();
 
@@ -55,19 +67,14 @@
 
             if (chatMessages != null)
             {
-                messages.Clear(); // 清除现有消息
+                messages.Clear();  
                 foreach (var chatMessage in chatMessages)
                 {
                     messages.Add($"You: {chatMessage.UserMessage}");
                     messages.Add($"Server: {chatMessage.BotMessage}");
                 }
-                StateHasChanged(); // 确保页面更新
+                StateHasChanged();  
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Initialization error: {ex.Message}");
-        }
     }
 
 
